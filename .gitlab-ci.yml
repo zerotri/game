@@ -1,0 +1,71 @@
+stages:
+  - build
+  - test
+  - upload
+
+build:linux:arch:x86:
+  image: base/archlinux
+  stage: build
+  script:
+    - pacman -Syu
+    - pacman -S base-devel cmake sdl2 git pkg-config
+    - git submodule update --init --recursive
+    - mkdir -p build-linux-arch-x86
+    - cd build-linux-arch-x86
+    - cmake ..
+    - cmake --build .
+  artifacts:
+    paths:
+      - build-linux-arch-x86/*
+
+# build:linux:x86:
+#   image: alpine
+#   stage: build
+#   script:
+#     - apk update
+#     - apk add build-base cmake sdl2-dev git pkgconfig
+#     - git submodule update --init --recursive
+#     - mkdir -p build-linux-x86
+#     - cd build-linux-x86
+#     - cmake ..
+#     - cmake --build .
+#   artifacts:
+#     paths:
+#       - build-linux-x86/*
+
+# build:linux:armhf:
+#   image: armhf/alpine
+#   stage: build
+#   script:
+#     - apk update
+#     - apk add build-base cmake sdl2-dev git pkgconfig
+#     - git submodule update --init --recursive
+#     - mkdir -p build-linux-armhf
+#     - cd build-linux-armhf
+#     - cmake ..
+#     - cmake --build .
+#   artifacts:
+#     paths:
+#       - build-linux-armhf/*
+
+# build:linux:arch:x86:
+#   image: base/archlinux
+#   stage: build
+#   script:
+#     - pacman -Syu
+#     - pacman -S base-devel cmake sdl2 git pkg-config
+#     - git submodule update --init --recursive
+#     - mkdir -p build-linux-arch-x86
+#     - cd build-linux-arch-x86
+#     - cmake ..
+#     - cmake --build .
+#   artifacts:
+#     paths:
+#       - build-linux-arch-x86/*
+
+upload:
+  stage: upload
+  dependencies:
+    - build:linux:arch:x86
+  script:
+    - ls -al
